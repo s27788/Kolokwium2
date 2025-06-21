@@ -1,4 +1,4 @@
-using Kolokwium2.DTOs;
+namespace Kolokwium2.DTOs;
 
 public class RecordResponseDto
 {

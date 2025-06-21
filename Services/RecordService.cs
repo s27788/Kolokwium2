@@ -5,18 +5,11 @@ using Kolokwium2.Data;
 using Kolokwium2.DTOs;
 using Kolokwium2.Models;
 
-public class RecordService : IRecordService
+public class RecordService(AppDbContext context) : IRecordService
 {
-    private readonly AppDbContext _context;
-
-    public RecordService(AppDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<IEnumerable<RecordResponseDto>> GetRecordsAsync(int? languageId, int? taskId, DateTime? createdAfter)
     {
-        var query = _context.Records
+        var query = context.Records
             .Include(r => r.Language)
             .Include(r => r.Student)
             .Include(r => r.TaskModel)
@@ -59,20 +52,20 @@ public class RecordService : IRecordService
 
     public async Task<int> AddRecordAsync(RecordRequestDto dto)
     {
-        var student = await _context.Students.FindAsync(dto.StudentId);
+        var student = await context.Students.FindAsync(dto.StudentId);
         if (student is null)
-            throw new ArgumentException("Student not found");
+            throw new ArgumentException("student not found");
 
-        var language = await _context.Languages.FindAsync(dto.LanguageId);
+        var language = await context.Languages.FindAsync(dto.LanguageId);
         if (language is null)
-            throw new ArgumentException("Language not found");
+            throw new ArgumentException("language not found");
 
         TaskModel? task = null;
         if (dto.TaskModel.Id is not null)
         {
-            task = await _context.Tasks.FindAsync(dto.TaskModel.Id.Value);
+            task = await context.Tasks.FindAsync(dto.TaskModel.Id.Value);
             if (task == null && string.IsNullOrWhiteSpace(dto.TaskModel.Name))
-                throw new ArgumentException("Task not found and name not provided");
+                throw new ArgumentException("Task not found, name not provided");
         }
 
         if (task == null && !string.IsNullOrWhiteSpace(dto.TaskModel.Name) && !string.IsNullOrWhiteSpace(dto.TaskModel.Description))
@@ -83,12 +76,12 @@ public class RecordService : IRecordService
                 Description = dto.TaskModel.Description!
             };
 
-            _context.Tasks.Add(task);
-            await _context.SaveChangesAsync();
+            context.Tasks.Add(task);
+            await context.SaveChangesAsync();
         }
 
         if (task == null)
-            throw new ArgumentException("Task resolution failed");
+            throw new ArgumentException("Task failed");
 
         var record = new Record
         {
@@ -99,8 +92,8 @@ public class RecordService : IRecordService
             TaskId = task.Id
         };
 
-        _context.Records.Add(record);
-        await _context.SaveChangesAsync();
+        context.Records.Add(record);
+        await context.SaveChangesAsync();
 
         return record.Id;
     }

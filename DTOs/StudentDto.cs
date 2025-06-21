@@ -1,4 +1,3 @@
-// DTOs/StudentDto.cs
 namespace Kolokwium2.DTOs;
 
 public class StudentDto

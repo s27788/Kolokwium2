@@ -24,9 +24,9 @@ using (var scope = app.Services.CreateScope())
     {
         db.Students.Add(new Kolokwium2.Models.Student
         {
-            FirstName = "Adam",
-            LastName = "Miller",
-            Email = "adam.miller@mail.com"
+            FirstName = "Kasia",
+            LastName = "Burs",
+            Email = "kasia.burs@mail.com"
         });
     }
 

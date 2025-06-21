@@ -6,19 +6,12 @@ namespace Kolokwium2.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class RecordsController : ControllerBase
+public class RecordsController(IRecordService service) : ControllerBase
 {
-    private readonly IRecordService _service;
-
-    public RecordsController(IRecordService service)
-    {
-        _service = service;
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetRecords([FromQuery] int? languageId, [FromQuery] int? taskId, [FromQuery] DateTime? createdAfter)
     {
-        var records = await _service.GetRecordsAsync(languageId, taskId, createdAfter);
+        var records = await service.GetRecordsAsync(languageId, taskId, createdAfter);
         return Ok(records);
     }
 
@@ -27,7 +20,7 @@ public class RecordsController : ControllerBase
     {
         try
         {
-            var id = await _service.AddRecordAsync(dto);
+            var id = await service.AddRecordAsync(dto);
             return CreatedAtAction(nameof(GetRecords), new { id = id }, new { id = id });
         }
         catch (ArgumentException e)

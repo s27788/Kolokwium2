@@ -1,3 +1,5 @@
+namespace Kolokwium2.DTOs;
+
 public class TaskModelDto
 {
     public int? Id { get; set; }

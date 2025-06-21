@@ -1,5 +1,6 @@
-public class RecordRequestDto
+namespace Kolokwium2.DTOs;
 
+public class RecordRequestDto
 
 {
     public long ExecutionTime { get; set; }
