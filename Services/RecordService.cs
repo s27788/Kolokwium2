@@ -37,7 +37,7 @@ public class RecordService : IRecordService
             .Select(r => new RecordResponseDto
             {
                 Id = r.Id,
-                ExecutionTime = r.ExecutionTime,
+                ExecutionTime = r.ExecutionTime.ToString(),
                 Created = r.CreatedAt,
                 Language = new LanguageDto { Id = r.Language.Id, Name = r.Language.Name },
                 Student = new StudentDto
@@ -59,17 +59,14 @@ public class RecordService : IRecordService
 
     public async Task<int> AddRecordAsync(RecordRequestDto dto)
     {
-        // check student
         var student = await _context.Students.FindAsync(dto.StudentId);
         if (student is null)
             throw new ArgumentException("Student not found");
 
-        // check language
         var language = await _context.Languages.FindAsync(dto.LanguageId);
         if (language is null)
             throw new ArgumentException("Language not found");
 
-        // resolve task
         TaskModel? task = null;
         if (dto.TaskModel.Id is not null)
         {

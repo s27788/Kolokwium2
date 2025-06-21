@@ -1,4 +1,3 @@
-// DTOs/LanguageDto.cs
 namespace Kolokwium2.DTOs;
 
 public class LanguageDto
